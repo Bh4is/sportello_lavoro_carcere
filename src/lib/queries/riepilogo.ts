@@ -1,7 +1,8 @@
 
 import "server-only";
-import { connection } from "next/server";
 
+import { connection } from "next/server";
+import { requireAuth } from "@/src/lib/requireAuth";
 import pool from "@/src/lib/db";
 
 import type {
@@ -18,7 +19,8 @@ export async function getDatiRiepilogo(): Promise<{
     codici: CodiceServizio[];
     detenuti: DetenutoRow[];
 }> {
-  await connection();
+    await connection();
+    await requireAuth();
     // Recupera contemporaneamente codici e riepilogo ore
     const [risultatoCodici, risultatoOre] = await Promise.all([
         // Codici di servizio e relative tipologie

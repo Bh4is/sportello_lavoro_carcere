@@ -1,5 +1,7 @@
 
 import "server-only";
+import { connection } from "next/server";
+import { requireAuth } from "@/src/lib/requireAuth";
 
 import pool from "@/src/lib/db";
 
@@ -13,6 +15,9 @@ import type {
  * dalla VIEW MariaDB riepilogo_ore_mensili.
  */
 export async function getRiepilogoOreMensili(): Promise<OreMensiliRow[]> {
+    await connection();
+    await requireAuth();
+    
     const [rows] = await pool.query<RiepilogoOreMensili[]>(`
     SELECT
       anno,
