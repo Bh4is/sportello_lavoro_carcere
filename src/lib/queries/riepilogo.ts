@@ -1,5 +1,6 @@
 
 import "server-only";
+import { connection } from "next/server";
 
 import pool from "@/src/lib/db";
 
@@ -17,6 +18,7 @@ export async function getDatiRiepilogo(): Promise<{
     codici: CodiceServizio[];
     detenuti: DetenutoRow[];
 }> {
+  await connection();
     // Recupera contemporaneamente codici e riepilogo ore
     const [risultatoCodici, risultatoOre] = await Promise.all([
         // Codici di servizio e relative tipologie
