@@ -18,7 +18,7 @@ export default function Navbar() {
          <div className="flex items-center gap-5 text-lg">
             <NavLink href="/">Riassuntivo</NavLink>
             <NavLink href="/scheda-individuale">Scheda Individuale</NavLink>
-            <NavLink href="/colloqui">Colloqui</NavLink>
+            <NavLink href="/inserisci">Inserisci</NavLink>
             <NavLink href="/ore">Riepilogo Ore</NavLink>
          </div>
 

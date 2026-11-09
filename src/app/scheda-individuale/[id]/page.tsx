@@ -10,7 +10,8 @@ import ChecklistDocumenti from "@/src/components/SchedaIndividuale/ChecklistDocu
 
 import { getDetenutiSearch, getDetenutoById } from "@/src/lib/queries/detenuti";
 
-import { getColloquiDetenuto } from "@/src/lib/queries/colloquiDetenuti";
+import { getColloquiDetenuto, getCodiciServizioColloqui } from "@/src/lib/queries/colloquiDetenuti";
+
 import { getDocumentiDetenuto } from "@/src/lib/queries/documenti";
 
 type SchedaDetenutoPageProps = {
@@ -37,12 +38,14 @@ async function DetenutoSearchServer() {
  * - dati anagrafici
  * - storico dei colloqui
  * - checklist documenti
+ * - codici di servizio disponibili
  */
 async function SchedaDetenutoContent({ id }: { id: number }) {
-   const [detenuto, colloqui, documenti] = await Promise.all([
+   const [detenuto, colloqui, documenti, codici] = await Promise.all([
       getDetenutoById(id),
       getColloquiDetenuto(id),
       getDocumentiDetenuto(id),
+      getCodiciServizioColloqui(),
    ]);
 
    if (!detenuto) {
@@ -74,7 +77,7 @@ async function SchedaDetenutoContent({ id }: { id: number }) {
             {/* Tab interattive */}
             <SchedaTabs
                anagrafica={<DatiAnagrafici detenuto={detenuto} />}
-               colloqui={<StoricoColloqui detenutoId={detenuto.id} colloqui={colloqui} />}
+               colloqui={<StoricoColloqui detenutoId={detenuto.id} colloqui={colloqui} codici={codici} />}
                documenti={<ChecklistDocumenti detenutoId={detenuto.id} documenti={documenti} />}
             />
          </div>
@@ -109,7 +112,7 @@ export default function SchedaDetenutoPage({ params }: SchedaDetenutoPageProps) 
       <div className="flex h-full min-h-0 flex-col">
          <Suspense
             fallback={
-               <div className="mx-auto mt-4 w-19/20 rounded-xl border border-border bg-lightbg p-8 text-center text-sm text-muted">
+               <div className="mx-auto mt-4 w-[95%] max-w-6xl rounded-xl border border-border bg-lightbg p-8 text-center text-sm text-muted">
                   Caricamento scheda individuale...
                </div>
             }
