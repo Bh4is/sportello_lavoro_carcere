@@ -8,7 +8,7 @@ import {
 } from "node:crypto";
 
 export const SESSION_COOKIE = "slc_session";
-export const SESSION_DURATION = 30 * 60; // 30 minuti
+export const SESSION_DURATION = 8 * 60 * 60; // 8 ore
 
 function getSessionSecret(): string {
     const secret = process.env.SLC_SESSION_SECRET;

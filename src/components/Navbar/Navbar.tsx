@@ -17,6 +17,7 @@ export default function Navbar() {
 
          <div className="flex items-center gap-5 text-lg">
             <NavLink href="/">Riassuntivo</NavLink>
+            <NavLink href="/scheda-individuale">Scheda Individuale</NavLink>
             <NavLink href="/colloqui">Colloqui</NavLink>
             <NavLink href="/ore">Riepilogo Ore</NavLink>
          </div>
@@ -24,7 +25,8 @@ export default function Navbar() {
          <form action="/api/auth/logout" method="POST">
             <button
                type="submit"
-               className="rounded-lg border border-sky-400/40 px-4 py-2 text-sm font-medium text-sky-300 transition hover:bg-sky-400/10">
+               className="rounded-lg border border-primary-border px-4 py-2 text-sm font-medium text-primary transition hover:bg-primary-soft"
+            >
                Esci
             </button>
          </form>

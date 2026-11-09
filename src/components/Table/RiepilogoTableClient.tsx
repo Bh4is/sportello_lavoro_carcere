@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 
 import BaseTable, { type Column } from "@/src/components/Table/BaseTable";
 
@@ -82,10 +83,27 @@ export default function RiepilogoTableClient({ codici, detenuti }: RiepilogoTabl
 
          render: (row) => (
             <div className="flex flex-col gap-1">
-               <span className="font-semibold text-slate-100">{row.detenuto}</span>
+               <Link
+                  href={`/scheda-individuale/${row.id}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  prefetch={false}
+                  className="
+                     w-fit font-semibold text-foreground
+                     transition-colors
+                     hover:text-primary hover:underline
+                     focus-visible:rounded-sm
+                     focus-visible:outline-2
+                     focus-visible:outline-offset-2
+                     focus-visible:outline-primary
+                  "
+                  title={`Apri la scheda individuale di ${row.detenuto} in una nuova scheda`}
+               >
+                  {row.detenuto}
+               </Link>
 
                {row.data_primo_colloquio && (
-                  <span className="text-xs font-normal text-slate-400">
+                  <span className="text-xs font-normal text-muted">
                      Primo colloquio: {row.data_primo_colloquio}
                   </span>
                )}
@@ -108,13 +126,13 @@ export default function RiepilogoTableClient({ codici, detenuti }: RiepilogoTabl
                return (
                   <div className="flex flex-col items-center gap-1">
                      <div className="flex items-center gap-2">
-                        <span className="w-6 text-right text-xs text-slate-400">C:</span>
+                        <span className="w-6 text-right text-xs text-muted">C:</span>
 
                         <span className="font-medium tabular-nums">{formatDurata(colloquio)}</span>
                      </div>
 
                      <div className="flex items-center gap-2">
-                        <span className="w-6 text-right text-xs text-slate-400">BO:</span>
+                        <span className="w-6 text-right text-xs text-muted">BO:</span>
 
                         <span className="font-medium tabular-nums">{formatDurata(backOffice)}</span>
                      </div>
@@ -129,7 +147,7 @@ export default function RiepilogoTableClient({ codici, detenuti }: RiepilogoTabl
       <div className="flex h-full min-h-0 flex-col">
          {/* Barra dei filtri */}
          <div className="mx-auto mt-4 flex w-19/20 flex-wrap items-center justify-between gap-3">
-            <span className="text-sm text-slate-400">
+            <span className="text-sm text-muted">
                {detenutiFiltrati.length} {detenutiFiltrati.length === 1 ? "detenuto" : "detenuti"}
                {ricerca.trim() && " trovati"}
             </span>
@@ -148,7 +166,8 @@ export default function RiepilogoTableClient({ codici, detenuti }: RiepilogoTabl
                      strokeLinecap="round"
                      strokeLinejoin="round"
                      aria-hidden="true"
-                     className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-slate-400">
+                     className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-muted"
+                  >
                      <circle cx="11" cy="11" r="8" />
                      <path d="m21 21-4.35-4.35" />
                   </svg>
@@ -160,16 +179,16 @@ export default function RiepilogoTableClient({ codici, detenuti }: RiepilogoTabl
                      onChange={(e) => setRicerca(e.target.value)}
                      placeholder="Cerca detenuto..."
                      className="
-                w-64 rounded-lg
-                border border-slate-600
-                bg-lightbg
-                py-2 pr-3 pl-10
-                text-sm text-slate-100
-                placeholder:text-slate-400
-                outline-none
-                transition-colors
-                focus:border-primary
-              "
+                        w-64 rounded-lg
+                        border border-border-strong
+                        bg-lightbg
+                        py-2 pr-3 pl-10
+                        text-sm text-foreground
+                        placeholder:text-muted
+                        outline-none
+                        transition-colors
+                        focus:border-primary
+                     "
                   />
                </div>
 
@@ -179,15 +198,16 @@ export default function RiepilogoTableClient({ codici, detenuti }: RiepilogoTabl
                   value={ordinamento}
                   onChange={(e) => setOrdinamento(e.target.value as Ordinamento)}
                   className="
-              min-w-52 cursor-pointer rounded-lg
-              border border-slate-600
-              bg-lightbg
-              px-3 py-2
-              text-sm text-slate-100
-              outline-none
-              transition-colors
-              focus:border-primary
-            ">
+                     min-w-52 cursor-pointer rounded-lg
+                     border border-border-strong
+                     bg-lightbg
+                     px-3 py-2
+                     text-sm text-foreground
+                     outline-none
+                     transition-colors
+                     focus:border-primary
+                  "
+               >
                   <option value="alfabetico">Alfabetico (A-Z)</option>
 
                   <option value="data_asc">Primo colloquio (meno recente)</option>

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import { Suspense } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
+
 import "./globals.css";
 
 import Navbar from "@/src/components/Navbar/Navbar";
@@ -23,7 +25,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
    return (
       <html lang="it" className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
          <body>
-            <Navbar />
+            <Suspense fallback={null}>
+               <Navbar />
+            </Suspense>
+
             <main>{children}</main>
          </body>
       </html>

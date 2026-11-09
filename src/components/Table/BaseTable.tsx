@@ -55,7 +55,7 @@ export default function BaseTable<T>({
       <div
          className={`
         overflow-hidden rounded-xl
-        border border-slate-700
+        border border-border
         bg-lightbg shadow-sm
         ${fullWidth ? `mx-auto mt-4 w-19/20 ${fillHeight ? "h-[calc(100%-1rem)]" : ""}` : "w-full"}
       `}>
@@ -76,8 +76,8 @@ export default function BaseTable<T>({
                                        rowSpan={2}
                                        className={`
                             min-w-24 whitespace-nowrap
-                            border-b border-r border-slate-600
-                            bg-slate-700
+                            border-b border-r border-border-strong
+                            bg-surface-raised
                             text-sm font-semibold
                             tracking-wide text-primary
                             ${cellPadding}
@@ -95,8 +95,8 @@ export default function BaseTable<T>({
                                     scope="colgroup"
                                     colSpan={group.columns.length}
                                     className={`
-                          border-b border-r border-slate-600
-                          bg-slate-700
+                          border-b border-r border-border-strong
+                          bg-surface-raised
                           px-4 py-3 text-center
                           text-sm font-semibold
                           tracking-wide text-primary
@@ -116,10 +116,10 @@ export default function BaseTable<T>({
                                     scope="col"
                                     className={`
                           min-w-28 whitespace-nowrap
-                          border-b border-r border-slate-600
+                          border-b border-r border-border-strong
                           bg-slate-700/95
                           text-center text-sm font-semibold
-                          text-slate-200
+                          text-text-on-surface
                           ${cellPadding}
                           ${column.className ?? ""}
                         `}>
@@ -136,8 +136,8 @@ export default function BaseTable<T>({
                               scope="col"
                               className={`
                       min-w-24 whitespace-nowrap
-                      border-b border-slate-600
-                      bg-slate-700
+                      border-b border-border-strong
+                      bg-surface-raised
                       text-sm font-semibold
                       tracking-wide text-primary
                       ${cellPadding}
@@ -158,7 +158,7 @@ export default function BaseTable<T>({
                            colSpan={columns.length}
                            className="
                     px-4 py-10 text-center
-                    text-sm text-slate-400
+                    text-sm text-muted
                   ">
                            {emptyMessage}
                         </td>
@@ -168,7 +168,7 @@ export default function BaseTable<T>({
                         <tr
                            key={getRowKey(row)}
                            className="
-                    group border-b border-slate-700
+                    group border-b border-border
                     bg-lightbg text-center
                     transition-colors
                     hover:bg-slate-700/50
@@ -178,10 +178,10 @@ export default function BaseTable<T>({
                                  key={index}
                                  className={`
                         min-w-24 whitespace-nowrap
-                        border-b border-slate-700
-                        text-sm text-slate-200
+                        border-b border-border
+                        text-sm text-text-on-surface
                         ${cellPadding}
-                        ${column.sticky ? "sticky left-0 z-20 bg-lightbg group-hover:bg-slate-700" : ""}
+                        ${column.sticky ? "sticky left-0 z-20 bg-lightbg group-hover:bg-surface-raised" : ""}
                         ${column.className ?? ""}
                       `}>
                                  {column.render(row)}

@@ -17,10 +17,11 @@ export default function OrePage() {
          <div className="min-h-0 flex-1">
             <Suspense
                fallback={
-                  <div className="mx-auto mt-4 w-19/20 rounded-xl border border-slate-700 bg-lightbg p-8 text-center text-sm text-slate-400">
+                  <div className="mx-auto mt-4 w-[95%] max-w-6xl rounded-xl border border-border bg-lightbg p-8 text-center text-sm text-muted">
                      Caricamento riepilogo ore...
                   </div>
-               }>
+               }
+            >
                <OreTable />
             </Suspense>
          </div>

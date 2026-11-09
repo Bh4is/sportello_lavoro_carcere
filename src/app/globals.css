@@ -1,21 +1,97 @@
 @import "tailwindcss";
 
+/*
+ * Sportello Lavoro Carcere
+ * Palette e design tokens
+ */
+
 :root {
+  /* Colori principali */
   --background: var(--color-gray-900);
   --foreground: var(--color-slate-100);
   --primary: var(--color-sky-300);
   --lightbg: var(--color-gray-800);
   --error: var(--color-red-400);
+
+  /* Superfici */
+  --surface: var(--color-gray-800);
+  --surface-raised: var(--color-slate-700);
+  --surface-input: var(--color-slate-900);
+  --surface-hover: var(--color-slate-700);
+
+  /* Bordi */
+  --border: var(--color-slate-700);
+  --border-strong: var(--color-slate-600);
+
+  /* Testi */
+  --muted: var(--color-slate-400);
+  --muted-subtle: var(--color-slate-500);
+  --muted-strong: var(--color-slate-300);
+  --text-on-surface: var(--color-slate-200);
+
+  /* Colori di interazione */
+  --primary-hover: var(--color-sky-400);
+  --primary-soft: rgb(56 189 248 / 10%);
+  --primary-border: rgb(56 189 248 / 40%);
+
+  /* Stati */
+  --danger: var(--color-red-400);
+  --danger-soft: rgb(248 113 113 / 10%);
+  --danger-border: rgb(248 113 113 / 40%);
+
+  --success: var(--color-emerald-400);
+  --warning: var(--color-amber-400);
 }
 
+/*
+ * Esposizione delle variabili a Tailwind 4.
+ *
+ * Esempi:
+ * bg-surface
+ * text-muted
+ * border-border
+ * text-danger
+ */
+
 @theme inline {
+  /* Compatibilità con i componenti esistenti */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-primary: var(--primary);
   --color-error: var(--error);
   --color-lightbg: var(--lightbg);
+
+  /* Superfici */
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-input: var(--surface-input);
+  --color-surface-hover: var(--surface-hover);
+
+  /* Bordi */
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+
+  /* Testi */
+  --color-muted: var(--muted);
+  --color-muted-subtle: var(--muted-subtle);
+  --color-muted-strong: var(--muted-strong);
+  --color-text-on-surface: var(--text-on-surface);
+
+  /* Interazioni */
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-soft: var(--primary-soft);
+  --color-primary-border: var(--primary-border);
+
+  /* Stati */
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-danger-border: var(--danger-border);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+
+  /* Tipografia */
   --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono); 
+  --font-mono: var(--font-geist-mono);
 }
 
 body {

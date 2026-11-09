@@ -12,7 +12,7 @@ async function LoginForm({ searchParams }: LoginPageProps) {
    return (
       <div className="w-full max-w-md rounded-2xl border border-white/10 bg-gray-800 p-8 shadow-xl">
          <div className="mb-8 text-center">
-            <h1 className="text-3xl font-bold text-sky-300">Sportello Lavoro Carcere</h1>
+            <h1 className="text-3xl font-bold text-primary">Sportello Lavoro Carcere</h1>
 
             <p className="mt-3 text-sm text-gray-400">Inserisci la password per accedere all&apos;applicazione.</p>
          </div>
@@ -41,7 +41,7 @@ async function LoginForm({ searchParams }: LoginPageProps) {
                   autoComplete="current-password"
                   autoFocus
                   maxLength={1024}
-                  className="w-full rounded-lg border border-gray-600 bg-gray-900 px-4 py-3 text-white outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-400/20"
+                  className="w-full rounded-lg border border-gray-600 bg-gray-900 px-4 py-3 text-white outline-none transition focus:border-primary-hover focus:ring-2 focus:ring-sky-400/20"
                   placeholder="Inserisci la password"
                />
             </div>
