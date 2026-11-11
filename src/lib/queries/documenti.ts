@@ -23,14 +23,18 @@ export type TipologiaDocumento = {
 };
 
 /**
- * Documento con lo stato relativo
+ * Documento con lo stato e le note relativi
  * al detenuto selezionato.
+ *
+ * Le note sono specifiche per la coppia
+ * detenuto + documento.
  */
 export type DocumentoDetenuto = {
    id: number;
    nome: string;
    descrizione: string | null;
    stato: StatoDocumento;
+   note: string | null;
 };
 
 /**
@@ -70,6 +74,10 @@ export async function getTipologieDocumenti(): Promise<TipologiaDocumento[]> {
  *
  * Include tutti i documenti attivi,
  * anche quelli non ancora valutati.
+ *
+ * Le note sono recuperate dalla tabella
+ * documenti_detenuti e rimangono NULL
+ * se non sono ancora state inserite.
  */
 export async function getDocumentiDetenuto(detenutoId: number): Promise<DocumentoDetenuto[]> {
    if (!Number.isSafeInteger(detenutoId) || detenutoId <= 0 || detenutoId > 4294967295) {
@@ -82,14 +90,15 @@ export async function getDocumentiDetenuto(detenutoId: number): Promise<Document
          td.id,
          td.nome,
          td.descrizione,
-         dd.stato
+         dd.stato,
+         dd.note
       FROM tipologie_documenti AS td
       LEFT JOIN documenti_detenuti AS dd
          ON dd.documento_id = td.id
          AND dd.detenuto_id = ?
       WHERE td.attivo = 1
       ORDER BY td.nome ASC, td.id ASC
-   `,
+      `,
       [detenutoId],
    );
 
@@ -98,5 +107,6 @@ export async function getDocumentiDetenuto(detenutoId: number): Promise<Document
       nome: row.nome,
       descrizione: row.descrizione,
       stato: row.stato,
+      note: row.note,
    }));
 }

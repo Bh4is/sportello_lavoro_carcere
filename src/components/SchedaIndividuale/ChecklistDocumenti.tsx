@@ -5,7 +5,7 @@ import { useState, useTransition } from "react";
 import LoadingSpinner from "@/src/components/Ui/LoadingSpinner";
 import NuovoDocumento from "@/src/components/SchedaIndividuale/NuovoDocumento";
 
-import { aggiornaStatoDocumento } from "@/src/lib/actions/documenti";
+import { aggiornaStatoDocumento, aggiornaNoteDocumento } from "@/src/lib/actions/documenti";
 
 import type { DocumentoDetenuto, StatoDocumento } from "@/src/lib/queries/documenti";
 
@@ -28,34 +28,91 @@ const stati = [
 /**
  * Singola voce della checklist.
  *
- * Ogni documento gestisce autonomamente
- * il proprio stato e il salvataggio.
+ * Stato e note vengono gestiti e salvati
+ * indipendentemente.
  */
 function DocumentoItem({ detenutoId, documento }: DocumentoItemProps) {
    const [stato, setStato] = useState<StatoDocumento>(documento.stato);
 
-   const [error, setError] = useState<string | null>(null);
-   const [isPending, startTransition] = useTransition();
+   const [errorStato, setErrorStato] = useState<string | null>(null);
+   const [isPendingStato, startTransitionStato] = useTransition();
 
+   // Note salvate nel database e testo attualmente modificato.
+   const [noteSalvate, setNoteSalvate] = useState(documento.note ?? "");
+   const [note, setNote] = useState(documento.note ?? "");
+
+   const [errorNote, setErrorNote] = useState<string | null>(null);
+   const [noteConfermate, setNoteConfermate] = useState(false);
+   const [isPendingNote, startTransitionNote] = useTransition();
+
+   const noteModificate = note !== noteSalvate;
+
+   /**
+    * Aggiorna soltanto lo stato del documento.
+    */
    function handleChange(nuovoStato: StatoDocumento) {
-      if (isPending || nuovoStato === stato) {
+      if (isPendingStato || nuovoStato === stato) {
          return;
       }
 
-      setError(null);
+      setErrorStato(null);
 
-      startTransition(async () => {
+      startTransitionStato(async () => {
          try {
             const result = await aggiornaStatoDocumento(detenutoId, documento.id, nuovoStato);
 
             if (!result.success) {
-               setError(result.error);
+               setErrorStato(result.error);
                return;
             }
 
             setStato(nuovoStato);
          } catch (err) {
-            setError(err instanceof Error ? err.message : "Errore durante il salvataggio.");
+            setErrorStato(err instanceof Error ? err.message : "Errore durante il salvataggio dello stato.");
+         }
+      });
+   }
+
+   /**
+    * Aggiorna il testo delle note.
+    */
+   function handleNoteChange(value: string) {
+      setNote(value);
+      setErrorNote(null);
+      setNoteConfermate(false);
+   }
+
+   /**
+    * Salva le note senza modificare lo stato.
+    */
+   function handleSalvaNote() {
+      if (isPendingNote || !noteModificate) {
+         return;
+      }
+
+      const noteDaSalvare = note;
+
+      setErrorNote(null);
+      setNoteConfermate(false);
+
+      startTransitionNote(async () => {
+         try {
+            const result = await aggiornaNoteDocumento(detenutoId, documento.id, noteDaSalvare);
+
+            if (!result.success) {
+               setErrorNote(result.error);
+               return;
+            }
+
+            // Il valore salvato dal server viene normalizzato con trim().
+            const noteNormalizzate = noteDaSalvare.trim();
+
+            setNoteSalvate(noteNormalizzate);
+            setNote((correnti) => (correnti === noteDaSalvare ? noteNormalizzate : correnti));
+
+            setNoteConfermate(true);
+         } catch (err) {
+            setErrorNote(err instanceof Error ? err.message : "Errore durante il salvataggio delle note.");
          }
       });
    }
@@ -78,7 +135,7 @@ function DocumentoItem({ detenutoId, documento }: DocumentoItemProps) {
             {/* Selezione dello stato */}
             <div className="flex flex-wrap items-center gap-3">
                <fieldset
-                  disabled={isPending}
+                  disabled={isPendingStato}
                   aria-label={`Stato documento: ${documento.nome}`}
                   className="flex flex-wrap items-center gap-2"
                >
@@ -98,7 +155,7 @@ function DocumentoItem({ detenutoId, documento }: DocumentoItemProps) {
                                     ? "border-primary-hover bg-sky-400/15 text-primary"
                                     : "border-border-strong bg-slate-800 text-muted-strong hover:border-slate-500 hover:bg-surface-raised"
                               }
-                              ${isPending ? "cursor-not-allowed opacity-50" : ""}
+                              ${isPendingStato ? "cursor-not-allowed opacity-50" : ""}
                            `}
                         >
                            <input
@@ -121,7 +178,7 @@ function DocumentoItem({ detenutoId, documento }: DocumentoItemProps) {
                   <button
                      type="button"
                      onClick={() => handleChange(null)}
-                     disabled={isPending}
+                     disabled={isPendingStato}
                      className="
                         rounded-lg border border-border-strong
                         px-3 py-2 text-xs text-muted
@@ -135,8 +192,8 @@ function DocumentoItem({ detenutoId, documento }: DocumentoItemProps) {
                   </button>
                )}
 
-               {/* Spinner */}
-               {isPending && (
+               {/* Salvataggio dello stato */}
+               {isPendingStato && (
                   <div className="flex items-center gap-2 text-primary">
                      <LoadingSpinner size="sm" label="Salvataggio stato documento" />
 
@@ -146,17 +203,85 @@ function DocumentoItem({ detenutoId, documento }: DocumentoItemProps) {
             </div>
          </div>
 
-         {/* Stato iniziale */}
-         {stato === null && !isPending && (
+         {/* Stato non ancora impostato */}
+         {stato === null && !isPendingStato && (
             <p className="mt-3 text-xs italic text-muted-subtle">Stato non ancora impostato</p>
          )}
 
-         {/* Errori */}
-         {error && (
+         {/* Errori dello stato */}
+         {errorStato && (
             <p role="alert" className="mt-3 text-xs text-danger">
-               {error}
+               {errorStato}
             </p>
          )}
+
+         {/* Note individuali del documento */}
+         <div className="mt-4 border-t border-border pt-4">
+            <label
+               htmlFor={`note-documento-${detenutoId}-${documento.id}`}
+               className="mb-2 block text-xs font-medium text-muted-strong"
+            >
+               Note
+            </label>
+
+            <textarea
+               id={`note-documento-${detenutoId}-${documento.id}`}
+               value={note}
+               onChange={(event) => handleNoteChange(event.target.value)}
+               rows={2}
+               placeholder="Annotazioni sul documento o sullo stato della pratica..."
+               className="
+                  w-full resize-y rounded-lg
+                  border border-border-strong
+                  bg-slate-800 px-3 py-2
+                  text-sm text-foreground
+                  placeholder:text-muted-subtle
+                  focus:border-primary
+                  focus:outline-none
+                  disabled:cursor-not-allowed
+                  disabled:opacity-50
+               "
+               disabled={isPendingNote}
+            />
+
+            <div className="mt-2 flex flex-wrap items-center justify-between gap-3">
+               <div aria-live="polite" className="text-xs">
+                  {isPendingNote ? (
+                     <span className="inline-flex items-center gap-2 text-primary">
+                        <LoadingSpinner size="sm" label="Salvataggio note documento" />
+                        Salvataggio note...
+                     </span>
+                  ) : errorNote ? (
+                     <span role="alert" className="text-danger">
+                        {errorNote}
+                     </span>
+                  ) : noteConfermate && !noteModificate ? (
+                     <span className="text-emerald-400">Note salvate correttamente</span>
+                  ) : noteModificate ? (
+                     <span className="text-muted">Modifiche non salvate</span>
+                  ) : (
+                     <span className="text-muted-subtle">{noteSalvate ? "Note salvate" : "Nessuna nota inserita"}</span>
+                  )}
+               </div>
+
+               <button
+                  type="button"
+                  onClick={handleSalvaNote}
+                  disabled={isPendingNote || !noteModificate}
+                  className="
+                     rounded-lg border border-primary
+                     bg-sky-400/10 px-3 py-2
+                     text-xs font-medium text-primary
+                     transition-colors
+                     hover:bg-sky-400/20
+                     disabled:cursor-not-allowed
+                     disabled:opacity-50
+                  "
+               >
+                  Salva note
+               </button>
+            </div>
+         </div>
       </div>
    );
 }
@@ -168,6 +293,7 @@ function DocumentoItem({ detenutoId, documento }: DocumentoItemProps) {
  * - catalogo dei documenti
  * - inserimento di nuove tipologie
  * - selezione degli stati individuali
+ * - note specifiche per ciascun documento
  */
 export default function ChecklistDocumenti({ detenutoId, documenti }: ChecklistDocumentiProps) {
    const completati = documenti.filter((documento) => documento.stato === "si").length;
